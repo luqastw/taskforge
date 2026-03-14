@@ -1,51 +1,36 @@
-# Dependencies
+# Laravel
 /vendor/
 /node_modules/
-
-# Environment
+/public/hot
+/public/storage
+/storage/*.key
+/storage/app/public/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
 .env
-.env.local
+.env.backup
 .env.*.local
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
 
-# Logs
-*.log
-/logs/
-/log/
+# Docker
+docker-compose.override.yml
 
-# Cache
-/cache/
-/tmp/
-*.cache
-
-# Build / compiled assets
-/public/build/
-/public/hot/
-/dist/
-
-# Upload directories
-/storage/
-/uploads/
-
-# IDE / editors
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
 .DS_Store
-Thumbs.db
 
-# PHP
-*.phar
-composer.lock
+# Database
+/database/database.sqlite
 
-# Coverage / tests
-/coverage/
-.phpunit.result.cache
-.phpunit.cache/
-
-# OS
-.DS_Store
-desktop.ini
-
-# Tests
+# Testing
 playground/
