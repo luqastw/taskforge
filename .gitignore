@@ -46,3 +46,6 @@ composer.lock
 # OS
 .DS_Store
 desktop.ini
+
+# Tests
+playground/
