@@ -11,7 +11,8 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +23,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tenant_id',
     ];
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
