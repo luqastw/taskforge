@@ -19,4 +19,9 @@ class Tenant extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function workspaces()
+    {
+        return $this->hasMany(Workspace::class)
+    }
 }

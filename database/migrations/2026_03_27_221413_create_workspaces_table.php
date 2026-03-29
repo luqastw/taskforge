@@ -10,8 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::create('workspaces', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
         });
     }
 
@@ -20,9 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['tenant_id']);
-            $table->dropColumn('tenant_id');
-        });
+        Schema::dropIfExists('workspaces');
     }
 };
