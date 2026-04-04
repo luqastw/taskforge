@@ -10,11 +10,13 @@ if (! function_exists('tenant')) {
      */
     function tenant(): ?Tenant
     {
-        if (! auth()->check()) {
+        $tenantId = tenant_id();
+
+        if ($tenantId === null) {
             return null;
         }
 
-        return auth()->user()?->tenant;
+        return Tenant::find($tenantId);
     }
 }
 
@@ -24,6 +26,12 @@ if (! function_exists('tenant_id')) {
      */
     function tenant_id(): ?int
     {
+        // First check if tenant_id is set in the app container (for testing)
+        if (app()->has('tenant_id')) {
+            return app('tenant_id');
+        }
+
+        // Otherwise, get from authenticated user
         return auth()->user()?->tenant_id;
     }
 }

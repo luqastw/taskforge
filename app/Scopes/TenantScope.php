@@ -15,9 +15,10 @@ class TenantScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        // Only apply scope if user is authenticated and has a tenant_id
-        if (auth()->check() && auth()->user()->tenant_id) {
-            $builder->where("{$model->getTable()}.tenant_id", auth()->user()->tenant_id);
+        $tenantId = tenant_id();
+
+        if ($tenantId !== null) {
+            $builder->where("{$model->getTable()}.tenant_id", $tenantId);
         }
     }
 }
