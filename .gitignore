@@ -34,3 +34,7 @@ docker-compose.override.yml
 
 # Testing
 playground/
+
+# Documentation sources
+*.docx
+*.doc
