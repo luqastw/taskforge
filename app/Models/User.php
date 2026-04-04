@@ -1,17 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\BelongsToTenant;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
+    use BelongsToTenant;
+
+    use HasApiTokens;
     use HasFactory;
+    use HasRoles;
     use Notifiable;
 
     /**
@@ -20,16 +29,11 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'tenant_id',
         'name',
         'email',
         'password',
-        'tenant_id',
     ];
-
-    public function tenant()
-    {
-        return $this->belongsTo(Tenant::class);
-    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -52,5 +56,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the tenant that owns the user.
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }
