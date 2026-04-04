@@ -27,12 +27,12 @@ interface RepositoryInterface
     /**
      * Update an existing model.
      */
-    public function update(Model $model, array $data): Model;
+    public function update(int $id, array $data): bool;
 
     /**
      * Delete a model.
      */
-    public function delete(Model $model): bool;
+    public function delete(int $id): bool;
 
     /**
      * Find models by a specific column value.

@@ -15,6 +15,14 @@ abstract class BaseRepository implements RepositoryInterface
 
     protected int $cacheTTL = 600; // 10 minutes
 
+    /**
+     * BaseRepository constructor.
+     */
+    public function __construct(Model $model)
+    {
+        $this->model = $model;
+    }
+
     public function find(int $id): ?Model
     {
         return Cache::remember(
@@ -37,16 +45,28 @@ abstract class BaseRepository implements RepositoryInterface
         return $model;
     }
 
-    public function update(Model $model, array $data): Model
+    public function update(int $id, array $data): bool
     {
+        $model = $this->find($id);
+
+        if ($model === null) {
+            return false;
+        }
+
         $model->update($data);
         $this->clearCache($model);
 
-        return $model->fresh();
+        return true;
     }
 
-    public function delete(Model $model): bool
+    public function delete(int $id): bool
     {
+        $model = $this->find($id);
+
+        if ($model === null) {
+            return false;
+        }
+
         $this->clearCache($model);
 
         return $model->delete();

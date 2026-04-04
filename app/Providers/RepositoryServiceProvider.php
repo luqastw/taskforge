@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\TenantRepositoryInterface;
+use App\Repositories\TenantRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -13,12 +15,15 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register repository bindings here as we create them
-        // Example:
-        // $this->app->bind(
-        //     \App\Repositories\Contracts\UserRepositoryInterface::class,
-        //     \App\Repositories\UserRepository::class
-        // );
+        $this->app->bind(
+            TenantRepositoryInterface::class,
+            TenantRepository::class
+        );
+
+        $this->app->bind(
+            UserRepositoryInterface::class,
+            UserRepository::class
+        );
     }
 
     /**
