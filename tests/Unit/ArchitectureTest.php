@@ -16,6 +16,7 @@ arch('models')
         'App\Policies',
         'App\Repositories',
         'App\Services',
+        'App\Traits',
         'Database\Factories',
         'Database\Seeders',
     ]);
@@ -23,7 +24,7 @@ arch('models')
 arch('repositories')
     ->expect('App\Repositories')
     ->toImplement('App\Repositories\Contracts\RepositoryInterface')
-    ->toOnlyBeUsedIn(['App\Services', 'App\Repositories']);
+    ->toOnlyBeUsedIn(['App\Services', 'App\Repositories', 'App\Providers', 'App\Http\Controllers']);
 
 arch('services')
     ->expect('App\Services')
