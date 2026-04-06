@@ -22,7 +22,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Tenant routes
     Route::get('/tenant', [TenantController::class, 'show'])->name('tenant.show');
     Route::put('/tenant', [TenantController::class, 'update'])->name('tenant.update');
-    Route::post('/tenant/transfer-ownership', [TenantController::class, 'transferOwnership'])->name('tenant.transfer-ownership');
+    Route::post('/tenant/transfer-ownership', [TenantController::class, 'transferOwnership'])
+        ->middleware('can:tenant.transfer')
+        ->name('tenant.transfer-ownership');
 
     // Invitation routes
     Route::post('/invitations', [InvitationController::class, 'invite'])->name('invitations.invite');
