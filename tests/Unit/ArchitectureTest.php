@@ -12,7 +12,10 @@ arch('models')
     ->toExtend('Illuminate\Database\Eloquent\Model')
     ->toOnlyBeUsedIn([
         'App\Http\Controllers',
+        'App\Http\Requests',
+        'App\Http\Resources',
         'App\Models',
+        'App\Notifications',
         'App\Policies',
         'App\Repositories',
         'App\Services',
@@ -32,7 +35,6 @@ arch('services')
 
 arch('policies')
     ->expect('App\Policies')
-    ->toExtend('Illuminate\Auth\Access\HandlesAuthorization')
     ->toOnlyBeUsedIn(['App\Policies', 'App\Providers']);
 
 arch('globals')
