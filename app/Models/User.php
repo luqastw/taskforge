@@ -67,4 +67,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Tenant::class);
     }
+
+    /**
+     * Get the workspaces the user belongs to.
+     */
+    public function workspaces(): BelongsToMany
+    {
+        return $this->belongsToMany(Workspace::class, 'workspace_user')
+            ->withPivot('joined_at')
+            ->withTimestamps();
+    }
 }
