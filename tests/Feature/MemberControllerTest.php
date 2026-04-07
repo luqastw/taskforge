@@ -105,7 +105,7 @@ test('can filter members by status', function (): void {
 test('can search members by name', function (): void {
     Sanctum::actingAs($this->owner);
 
-    $searchName = substr($this->member->name, 0, 5);
+    $searchName = urlencode(substr($this->member->name, 0, 5));
 
     $response = $this->getJson("/api/members?search={$searchName}");
 
