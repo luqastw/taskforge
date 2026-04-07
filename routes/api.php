@@ -9,6 +9,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceMemberController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -43,6 +44,16 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
     // Workspace routes
     Route::apiResource('workspaces', WorkspaceController::class);
+
+    // Workspace members routes
+    Route::get('/workspaces/{workspace}/members', [WorkspaceMemberController::class, 'index'])
+        ->name('workspaces.members.index');
+    Route::post('/workspaces/{workspace}/members', [WorkspaceMemberController::class, 'store'])
+        ->name('workspaces.members.store');
+    Route::post('/workspaces/{workspace}/members/bulk', [WorkspaceMemberController::class, 'addMultiple'])
+        ->name('workspaces.members.bulk');
+    Route::delete('/workspaces/{workspace}/members/{user}', [WorkspaceMemberController::class, 'destroy'])
+        ->name('workspaces.members.destroy');
 
     // Project routes
     Route::apiResource('projects', ProjectController::class);
