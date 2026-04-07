@@ -12,6 +12,7 @@ arch('models')
     ->toExtend('Illuminate\Database\Eloquent\Model')
     ->toOnlyBeUsedIn([
         'App\Http\Controllers',
+        'App\Http\Middleware',
         'App\Http\Requests',
         'App\Http\Resources',
         'App\Models',
