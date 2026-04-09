@@ -27,7 +27,13 @@ class ProjectPolicy
     public function update(User $user, Project $project): bool
     {
         return $user->tenant_id === $project->tenant_id
-            && $user->hasAnyRole(['owner', 'admin', 'member']);
+            && $user->hasAnyRole(['owner', 'admin']);
+    }
+
+    public function manageMembers(User $user, Project $project): bool
+    {
+        return $user->tenant_id === $project->tenant_id
+            && $user->hasAnyRole(['owner', 'admin']);
     }
 
     public function delete(User $user, Project $project): bool
