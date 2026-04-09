@@ -46,6 +46,10 @@ class ProjectMemberController extends Controller
             return $this->errorResponse('User not found in your tenant', 404);
         }
 
+        if (! $project->workspace->members()->where('user_id', $user->id)->exists()) {
+            return $this->errorResponse('User must be a member of the workspace first', 422);
+        }
+
         if ($project->members()->where('user_id', $user->id)->exists()) {
             return $this->errorResponse('User is already a member of this project', 422);
         }
@@ -116,10 +120,19 @@ class ProjectMemberController extends Controller
             return $this->errorResponse('No valid users found in your tenant', 404);
         }
 
+        $workspaceMemberIds = $project->workspace->members()->pluck('users.id')->toArray();
+
         $addedCount = 0;
         $alreadyMemberCount = 0;
+        $notInWorkspaceCount = 0;
 
         foreach ($users as $user) {
+            if (! in_array($user->id, $workspaceMemberIds)) {
+                $notInWorkspaceCount++;
+
+                continue;
+            }
+
             if ($project->members()->where('user_id', $user->id)->exists()) {
                 $alreadyMemberCount++;
 
@@ -146,6 +159,7 @@ class ProjectMemberController extends Controller
         return $this->successResponse([
             'added' => $addedCount,
             'already_members' => $alreadyMemberCount,
+            'not_in_workspace' => $notInWorkspaceCount,
         ], "{$addedCount} members added to project");
     }
 }

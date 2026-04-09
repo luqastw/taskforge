@@ -27,6 +27,10 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
             $query->where('status', $filters['status']);
         }
 
+        if (isset($filters['name'])) {
+            $query->where('name', 'like', '%'.$filters['name'].'%');
+        }
+
         return $query->latest()->paginate($perPage);
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\ProjectStatusChanged;
 use App\Models\Project;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -37,9 +38,22 @@ class ProjectService
 
     public function updateProject(Project $project, array $data): Project
     {
+        $previousStatus = $project->status;
+
         $this->projectRepository->update($project->id, $data);
 
-        return $project->fresh();
+        $project = $project->fresh();
+
+        if (isset($data['status']) && $previousStatus !== $data['status']) {
+            ProjectStatusChanged::dispatch(
+                $project,
+                $previousStatus,
+                $data['status'],
+                auth()->user()
+            );
+        }
+
+        return $project;
     }
 
     public function deleteProject(Project $project): bool
