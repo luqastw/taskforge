@@ -25,10 +25,10 @@ beforeEach(function () {
     ]);
     $this->member->assignRole('member');
 
-    $this->guest = User::factory()->create([
+    $this->viewer = User::factory()->create([
         'tenant_id' => $this->tenant->id,
     ]);
-    $this->guest->assignRole('guest');
+    $this->viewer->assignRole('viewer');
 });
 
 describe('Permission system', function () {
@@ -43,7 +43,7 @@ describe('Permission system', function () {
         expect($this->admin->hasPermissionTo('workspace.create'))->toBeTrue();
         expect($this->admin->hasPermissionTo('workspace.delete'))->toBeTrue();
         expect($this->admin->hasPermissionTo('tenant.transfer'))->toBeFalse();
-        expect($this->admin->hasPermissionTo('member.remove'))->toBeFalse();
+        expect($this->admin->hasPermissionTo('member.remove'))->toBeTrue();
     });
 
     test('member has basic permissions', function () {
@@ -54,22 +54,22 @@ describe('Permission system', function () {
         expect($this->member->hasPermissionTo('workspace.create'))->toBeFalse();
     });
 
-    test('guest has read-only permissions', function () {
-        expect($this->guest->hasPermissionTo('workspace.view'))->toBeTrue();
-        expect($this->guest->hasPermissionTo('project.view'))->toBeTrue();
-        expect($this->guest->hasPermissionTo('task.view'))->toBeTrue();
-        expect($this->guest->hasPermissionTo('task.create'))->toBeFalse();
+    test('viewer has read-only permissions', function () {
+        expect($this->viewer->hasPermissionTo('workspace.view'))->toBeTrue();
+        expect($this->viewer->hasPermissionTo('project.view'))->toBeTrue();
+        expect($this->viewer->hasPermissionTo('task.view'))->toBeTrue();
+        expect($this->viewer->hasPermissionTo('task.create'))->toBeFalse();
     });
 
     test('roles are correctly assigned', function () {
         expect($this->owner->hasRole('owner'))->toBeTrue();
         expect($this->admin->hasRole('admin'))->toBeTrue();
         expect($this->member->hasRole('member'))->toBeTrue();
-        expect($this->guest->hasRole('guest'))->toBeTrue();
+        expect($this->viewer->hasRole('viewer'))->toBeTrue();
     });
 
     test('can check permissions via string', function () {
         expect($this->owner->can('workspace.create'))->toBeTrue();
-        expect($this->guest->can('workspace.create'))->toBeFalse();
+        expect($this->viewer->can('workspace.create'))->toBeFalse();
     });
 });
