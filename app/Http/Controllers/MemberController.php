@@ -177,11 +177,9 @@ class MemberController extends Controller
                 ])
                 ->log("Member {$member->name} was removed from the tenant");
 
-            // TODO: Reassign tasks to someone else or mark as unassigned
-            // For now, we'll just detach the member from tasks
-            if (method_exists($member, 'tasks')) {
-                $member->tasks()->detach();
-            }
+            $member->tasks()->detach();
+            $member->projects()->detach();
+            $member->workspaces()->detach();
 
             // Remove member's roles
             $member->syncRoles([]);

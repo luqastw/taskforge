@@ -89,8 +89,9 @@ abstract class BaseRepository implements RepositoryInterface
     {
         $modelClass = class_basename($this->model);
         $modelId = $id instanceof Model ? $id->id : $id;
+        $tenantId = tenant_id() ?? 0;
 
-        return strtolower($modelClass).'.'.$modelId;
+        return "tenant.{$tenantId}.".strtolower($modelClass).'.'.$modelId;
     }
 
     /**
