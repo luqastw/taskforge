@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendInvitationEmailJob;
 use Illuminate\Support\Str;
 
 class InvitationService
@@ -22,9 +22,9 @@ class InvitationService
     public function invite(int $tenantId, int $invitedBy, string $email, string $role = 'member'): Invitation
     {
         return DB::transaction(function () use ($tenantId, $invitedBy, $email, $role) {
-            $existingUser = $this->userRepository->findByEmailAndTenant($email, $tenantId);
+            $existingUser = $this->userRepository->findByEmail($email);
             if ($existingUser) {
-                throw new \InvalidArgumentException('User already exists in this tenant.');
+                throw new \InvalidArgumentException('A user with this email already exists in the system.');
             }
 
             $existingInvitation = Invitation::withoutGlobalScope(\App\Scopes\TenantScope::class)
@@ -48,6 +48,15 @@ class InvitationService
                 'role' => $role,
                 'expires_at' => now()->addDays(7),
             ]);
+
+            $inviter = User::find($invitedBy);
+            $tenant = \App\Models\Tenant::find($tenantId);
+
+            SendInvitationEmailJob::dispatch(
+                invitation: $invitation,
+                inviterName: $inviter->name,
+                tenantName: $tenant->name
+            );
 
             return $invitation;
         });
