@@ -46,7 +46,7 @@ class UpdateMemberRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'role.in' => 'Role must be one of: admin, member, viewer',
+            'role.in' => 'Role must be one of: admin, member, viewer.',
         ];
     }
 }

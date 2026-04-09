@@ -11,35 +11,42 @@ class TaskPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('task.view');
     }
 
     public function view(User $user, Task $task): bool
     {
-        return $user->tenant_id === $task->tenant_id;
+        return $user->tenant_id === $task->tenant_id
+            && $user->hasPermissionTo('task.view');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['owner', 'admin', 'member']);
+        return $user->hasPermissionTo('task.create');
     }
 
     public function update(User $user, Task $task): bool
     {
         return $user->tenant_id === $task->tenant_id
-            && $user->hasAnyRole(['owner', 'admin', 'member']);
+            && $user->hasPermissionTo('task.update');
     }
 
     public function delete(User $user, Task $task): bool
     {
         return $user->tenant_id === $task->tenant_id
-            && $user->hasAnyRole(['owner', 'admin', 'member']);
+            && $user->hasPermissionTo('task.delete');
+    }
+
+    public function assign(User $user, Task $task): bool
+    {
+        return $user->tenant_id === $task->tenant_id
+            && $user->hasPermissionTo('task.assign');
     }
 
     public function restore(User $user, Task $task): bool
     {
         return $user->tenant_id === $task->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('task.update');
     }
 
     public function forceDelete(User $user, Task $task): bool

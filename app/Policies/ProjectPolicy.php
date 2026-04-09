@@ -11,41 +11,42 @@ class ProjectPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('project.view');
     }
 
     public function view(User $user, Project $project): bool
     {
-        return $user->tenant_id === $project->tenant_id;
+        return $user->tenant_id === $project->tenant_id
+            && $user->hasPermissionTo('project.view');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['owner', 'admin', 'member']);
+        return $user->hasPermissionTo('project.create');
     }
 
     public function update(User $user, Project $project): bool
     {
         return $user->tenant_id === $project->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('project.update');
     }
 
     public function manageMembers(User $user, Project $project): bool
     {
         return $user->tenant_id === $project->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('project.update');
     }
 
     public function delete(User $user, Project $project): bool
     {
         return $user->tenant_id === $project->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('project.delete');
     }
 
     public function restore(User $user, Project $project): bool
     {
         return $user->tenant_id === $project->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('project.update');
     }
 
     public function forceDelete(User $user, Project $project): bool

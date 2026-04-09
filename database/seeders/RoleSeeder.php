@@ -23,7 +23,7 @@ class RoleSeeder extends Seeder
         $owner = Role::create(['name' => 'owner']);
         $admin = Role::create(['name' => 'admin']);
         $member = Role::create(['name' => 'member']);
-        $guest = Role::create(['name' => 'guest']);
+        $viewer = Role::create(['name' => 'viewer']);
 
         // Create permissions
         $permissions = [
@@ -44,6 +44,7 @@ class RoleSeeder extends Seeder
             'task.view',
             'task.update',
             'task.delete',
+            'task.assign',
 
             // Member permissions
             'member.invite',
@@ -69,22 +70,24 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo([
             'workspace.create', 'workspace.view', 'workspace.update', 'workspace.delete',
             'project.create', 'project.view', 'project.update', 'project.delete',
-            'task.create', 'task.view', 'task.update', 'task.delete',
-            'member.invite', 'member.view', 'member.update',
+            'task.create', 'task.view', 'task.update', 'task.delete', 'task.assign',
+            'member.invite', 'member.view', 'member.update', 'member.remove',
         ]);
 
         // Member has basic permissions
         $member->givePermissionTo([
             'workspace.view',
             'project.view', 'project.create',
-            'task.create', 'task.view', 'task.update', 'task.delete',
+            'task.create', 'task.view', 'task.update', 'task.delete', 'task.assign',
+            'member.view',
         ]);
 
-        // Guest has read-only permissions
-        $guest->givePermissionTo([
+        // Viewer has read-only permissions
+        $viewer->givePermissionTo([
             'workspace.view',
             'project.view',
             'task.view',
+            'member.view',
         ]);
     }
 }

@@ -14,8 +14,7 @@ class WorkspacePolicy
      */
     public function viewAny(User $user): bool
     {
-        // All authenticated users can view workspaces from their tenant
-        return true;
+        return $user->hasPermissionTo('workspace.view');
     }
 
     /**
@@ -23,8 +22,8 @@ class WorkspacePolicy
      */
     public function view(User $user, Workspace $workspace): bool
     {
-        // User can view if workspace belongs to their tenant
-        return $user->tenant_id === $workspace->tenant_id;
+        return $user->tenant_id === $workspace->tenant_id
+            && $user->hasPermissionTo('workspace.view');
     }
 
     /**
@@ -32,8 +31,7 @@ class WorkspacePolicy
      */
     public function create(User $user): bool
     {
-        // Only owner and admin can create workspaces
-        return $user->hasAnyRole(['owner', 'admin']);
+        return $user->hasPermissionTo('workspace.create');
     }
 
     /**
@@ -41,9 +39,8 @@ class WorkspacePolicy
      */
     public function update(User $user, Workspace $workspace): bool
     {
-        // User must be from same tenant and have owner/admin role
         return $user->tenant_id === $workspace->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('workspace.update');
     }
 
     /**
@@ -51,9 +48,8 @@ class WorkspacePolicy
      */
     public function delete(User $user, Workspace $workspace): bool
     {
-        // User must be from same tenant and have owner/admin role
         return $user->tenant_id === $workspace->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('workspace.delete');
     }
 
     /**
@@ -61,9 +57,8 @@ class WorkspacePolicy
      */
     public function restore(User $user, Workspace $workspace): bool
     {
-        // User must be from same tenant and have owner/admin role
         return $user->tenant_id === $workspace->tenant_id
-            && $user->hasAnyRole(['owner', 'admin']);
+            && $user->hasPermissionTo('workspace.update');
     }
 
     /**
@@ -71,7 +66,6 @@ class WorkspacePolicy
      */
     public function forceDelete(User $user, Workspace $workspace): bool
     {
-        // Only owner can permanently delete
         return $user->tenant_id === $workspace->tenant_id
             && $user->hasRole('owner');
     }

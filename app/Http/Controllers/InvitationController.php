@@ -23,7 +23,7 @@ class InvitationController extends Controller
     {
         $validated = $request->validate([
             'email' => ['required', 'email'],
-            'role' => ['sometimes', 'string', 'in:admin,member,guest'],
+            'role' => ['sometimes', 'string', 'in:admin,member,viewer'],
         ]);
 
         try {
