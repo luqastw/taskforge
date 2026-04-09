@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectColumnController;
+use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\WorkspaceController;
@@ -14,11 +16,13 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
-Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/auth/login', [AuthController::class, 'login'])
+    ->middleware('throttle:login')
+    ->name('auth.login');
 Route::post('/invitations/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
 
 // Protected routes
-Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
+Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function () {
     // Auth routes
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::post('/auth/logout-current-device', [AuthController::class, 'logoutCurrentDevice'])->name('auth.logout-current-device');
@@ -67,6 +71,20 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         ->name('projects.members.bulk');
     Route::delete('/projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])
         ->name('projects.members.destroy');
+
+    // Project column routes
+    Route::get('/projects/{project}/columns', [ProjectColumnController::class, 'index'])
+        ->name('projects.columns.index');
+    Route::post('/projects/{project}/columns', [ProjectColumnController::class, 'store'])
+        ->name('projects.columns.store');
+    Route::get('/projects/{project}/columns/{column}', [ProjectColumnController::class, 'show'])
+        ->name('projects.columns.show');
+    Route::put('/projects/{project}/columns/{column}', [ProjectColumnController::class, 'update'])
+        ->name('projects.columns.update');
+    Route::delete('/projects/{project}/columns/{column}', [ProjectColumnController::class, 'destroy'])
+        ->name('projects.columns.destroy');
+    Route::post('/projects/{project}/columns/reorder', [ProjectColumnController::class, 'reorder'])
+        ->name('projects.columns.reorder');
 
     // Task routes
     Route::apiResource('tasks', TaskController::class);

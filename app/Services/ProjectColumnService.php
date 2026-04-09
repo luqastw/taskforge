@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Project;
 use App\Models\ProjectColumn;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProjectColumnService
 {
@@ -26,6 +27,51 @@ class ProjectColumnService
                 'color' => $column['color'],
                 'order' => $column['order'],
             ]);
+        }
+    }
+
+    public function getColumns(Project $project): Collection
+    {
+        return $project->columns()->orderBy('order')->get();
+    }
+
+    public function createColumn(Project $project, array $data): ProjectColumn
+    {
+        if (! isset($data['order'])) {
+            $data['order'] = ($project->columns()->max('order') ?? 0) + 1;
+        }
+
+        return ProjectColumn::create([
+            'project_id' => $project->id,
+            'name' => $data['name'],
+            'color' => $data['color'] ?? '#6B7280',
+            'order' => $data['order'],
+            'task_limit' => $data['task_limit'] ?? null,
+        ]);
+    }
+
+    public function updateColumn(ProjectColumn $column, array $data): ProjectColumn
+    {
+        $column->update($data);
+
+        return $column->fresh();
+    }
+
+    public function deleteColumn(ProjectColumn $column): bool
+    {
+        if ($column->tasks()->count() > 0) {
+            throw new \InvalidArgumentException('Cannot delete a column that has tasks. Move tasks first.');
+        }
+
+        return $column->delete();
+    }
+
+    public function reorderColumns(Project $project, array $orderedIds): void
+    {
+        foreach ($orderedIds as $index => $columnId) {
+            ProjectColumn::where('id', $columnId)
+                ->where('project_id', $project->id)
+                ->update(['order' => $index + 1]);
         }
     }
 }
