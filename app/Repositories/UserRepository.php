@@ -25,7 +25,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function findByEmail(string $email): ?Model
     {
-        return $this->model->where('email', $email)->first();
+        return $this->model->withoutGlobalScope(TenantScope::class)
+            ->where('email', $email)
+            ->first();
     }
 
     /**

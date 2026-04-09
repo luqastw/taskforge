@@ -9,6 +9,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
@@ -67,27 +68,21 @@ class AuthController extends Controller
     /**
      * Logout user from all devices.
      */
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request): Response
     {
         $this->authService->logout($request->user());
 
-        return $this->successResponse(
-            null,
-            'Logged out successfully'
-        );
+        return response()->noContent();
     }
 
     /**
      * Logout user from current device only.
      */
-    public function logoutCurrentDevice(Request $request): JsonResponse
+    public function logoutCurrentDevice(Request $request): Response
     {
         $this->authService->logoutCurrentDevice($request->user());
 
-        return $this->successResponse(
-            null,
-            'Logged out from current device'
-        );
+        return response()->noContent();
     }
 
     /**

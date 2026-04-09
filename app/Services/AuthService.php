@@ -62,13 +62,13 @@ class AuthService
      */
     public function login(array $credentials): ?array
     {
-        // Find user by email and tenant
-        $user = $this->userRepository->findByEmailAndTenant(
-            $credentials['email'],
-            $credentials['tenant_id']
-        );
+        $user = $this->userRepository->findByEmail($credentials['email']);
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            return null;
+        }
+
+        if (! $user->is_active) {
             return null;
         }
 
