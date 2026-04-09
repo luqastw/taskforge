@@ -69,6 +69,16 @@ class Project extends Model
     }
 
     /**
+     * Get the members of the project.
+     */
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_user')
+            ->withPivot('joined_at')
+            ->withTimestamps();
+    }
+
+    /**
      * Activity log configuration.
      */
     public function getActivitylogOptions(): LogOptions
