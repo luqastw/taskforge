@@ -58,6 +58,16 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
     // Project routes
     Route::apiResource('projects', ProjectController::class);
 
+    // Project members routes
+    Route::get('/projects/{project}/members', [ProjectMemberController::class, 'index'])
+        ->name('projects.members.index');
+    Route::post('/projects/{project}/members', [ProjectMemberController::class, 'store'])
+        ->name('projects.members.store');
+    Route::post('/projects/{project}/members/bulk', [ProjectMemberController::class, 'addMultiple'])
+        ->name('projects.members.bulk');
+    Route::delete('/projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])
+        ->name('projects.members.destroy');
+
     // Task routes
     Route::apiResource('tasks', TaskController::class);
 });
