@@ -8,6 +8,7 @@ use App\Traits\BelongsToTenant;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -74,6 +75,16 @@ class User extends Authenticatable
     public function workspaces(): BelongsToMany
     {
         return $this->belongsToMany(Workspace::class, 'workspace_user')
+            ->withPivot('joined_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the projects the user belongs to.
+     */
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'project_user')
             ->withPivot('joined_at')
             ->withTimestamps();
     }
