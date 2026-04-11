@@ -24,7 +24,11 @@ class TaskController extends Controller
         $this->authorize('viewAny', Task::class);
 
         $perPage = (int) $request->get('per_page', 15);
-        $filters = $request->only(['project_id', 'project_column_id', 'priority', 'parent_id']);
+        $filters = $request->only([
+            'project_id', 'project_column_id', 'priority', 'parent_id',
+            'assignee_id', 'deadline', 'deadline_from', 'deadline_to',
+            'order_by', 'order_dir',
+        ]);
 
         $tasks = $this->taskService->getAllTasks($perPage, $filters);
 
@@ -61,5 +65,20 @@ class TaskController extends Controller
         $this->taskService->deleteTask($task);
 
         return response()->noContent();
+    }
+
+    /**
+     * List subtasks of a task.
+     */
+    public function subtasks(Task $task): AnonymousResourceCollection
+    {
+        $this->authorize('view', $task);
+
+        $subtasks = $task->subtasks()
+            ->with(['column', 'assignees'])
+            ->orderBy('order')
+            ->paginate(request('per_page', 15));
+
+        return TaskResource::collection($subtasks);
     }
 }
