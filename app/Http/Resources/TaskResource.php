@@ -25,6 +25,9 @@ class TaskResource extends JsonResource
             'column' => new ProjectColumnResource($this->whenLoaded('column')),
             'parent' => new TaskResource($this->whenLoaded('parent')),
             'subtasks' => TaskResource::collection($this->whenLoaded('subtasks')),
+            'assignees' => MemberResource::collection($this->whenLoaded('assignees')),
+            'subtasks_count' => $this->whenCounted('subtasks'),
+            'assignees_count' => $this->whenCounted('assignees'),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
