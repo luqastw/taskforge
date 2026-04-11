@@ -8,6 +8,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectColumnController;
 use App\Http\Controllers\ProjectMemberController;
+use App\Http\Controllers\TaskAssigneeController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\WorkspaceController;
@@ -88,4 +89,18 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
 
     // Task routes
     Route::apiResource('tasks', TaskController::class);
+
+    // Task subtasks
+    Route::get('/tasks/{task}/subtasks', [TaskController::class, 'subtasks'])
+        ->name('tasks.subtasks');
+
+    // Task assignees routes
+    Route::get('/tasks/{task}/assignees', [TaskAssigneeController::class, 'index'])
+        ->name('tasks.assignees.index');
+    Route::post('/tasks/{task}/assignees', [TaskAssigneeController::class, 'store'])
+        ->name('tasks.assignees.store');
+    Route::post('/tasks/{task}/assignees/bulk', [TaskAssigneeController::class, 'storeBulk'])
+        ->name('tasks.assignees.bulk');
+    Route::delete('/tasks/{task}/assignees/{user}', [TaskAssigneeController::class, 'destroy'])
+        ->name('tasks.assignees.destroy');
 });
