@@ -26,7 +26,7 @@ class TaskController extends Controller
         $perPage = (int) $request->get('per_page', 15);
         $filters = $request->only([
             'project_id', 'project_column_id', 'priority', 'parent_id',
-            'assignee_id', 'deadline', 'deadline_from', 'deadline_to',
+            'assignee_id', 'tag_id', 'deadline', 'deadline_from', 'deadline_to',
             'order_by', 'order_dir',
         ]);
 

@@ -17,7 +17,7 @@ class TaskRepository extends BaseRepository implements TaskRepositoryInterface
 
     public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
     {
-        $query = $this->model->with(['project', 'column', 'assignees']);
+        $query = $this->model->with(['project', 'column', 'assignees', 'tags']);
 
         if (isset($filters['project_id'])) {
             $query->where('project_id', $filters['project_id']);
@@ -33,6 +33,10 @@ class TaskRepository extends BaseRepository implements TaskRepositoryInterface
 
         if (isset($filters['parent_id'])) {
             $query->where('parent_id', $filters['parent_id']);
+        }
+
+        if (isset($filters['tag_id'])) {
+            $query->whereHas('tags', fn ($q) => $q->where('tags.id', $filters['tag_id']));
         }
 
         if (isset($filters['assignee_id'])) {

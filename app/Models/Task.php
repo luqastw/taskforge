@@ -13,11 +13,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Task extends Model
+class Task extends Model implements HasMedia
 {
     use BelongsToTenant;
     use HasFactory;
+    use InteractsWithMedia;
     use LogsActivity;
     use SoftDeletes;
 
@@ -71,6 +74,22 @@ class Task extends Model
         return $this->belongsToMany(User::class, 'task_user')
             ->withPivot('assigned_at')
             ->withTimestamps();
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'task_tag');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('attachments')
+            ->useDisk('public');
     }
 
     public function getActivitylogOptions(): LogOptions

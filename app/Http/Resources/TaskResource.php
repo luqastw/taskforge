@@ -26,6 +26,7 @@ class TaskResource extends JsonResource
             'parent' => new TaskResource($this->whenLoaded('parent')),
             'subtasks' => TaskResource::collection($this->whenLoaded('subtasks')),
             'assignees' => MemberResource::collection($this->whenLoaded('assignees')),
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
             'subtasks_count' => $this->whenCounted('subtasks'),
             'assignees_count' => $this->whenCounted('assignees'),
             'created_at' => $this->created_at?->toIso8601String(),
