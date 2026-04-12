@@ -37,6 +37,8 @@ describe('Permission system', function () {
         expect($this->owner->hasPermissionTo('workspace.delete'))->toBeTrue();
         expect($this->owner->hasPermissionTo('tenant.transfer'))->toBeTrue();
         expect($this->owner->hasPermissionTo('task.create'))->toBeTrue();
+        expect($this->owner->hasPermissionTo('tag.create'))->toBeTrue();
+        expect($this->owner->hasPermissionTo('comment.create'))->toBeTrue();
     });
 
     test('admin has most permissions except tenant management', function () {
@@ -44,6 +46,9 @@ describe('Permission system', function () {
         expect($this->admin->hasPermissionTo('workspace.delete'))->toBeTrue();
         expect($this->admin->hasPermissionTo('tenant.transfer'))->toBeFalse();
         expect($this->admin->hasPermissionTo('member.remove'))->toBeTrue();
+        expect($this->admin->hasPermissionTo('tag.create'))->toBeTrue();
+        expect($this->admin->hasPermissionTo('tag.delete'))->toBeTrue();
+        expect($this->admin->hasPermissionTo('comment.delete'))->toBeTrue();
     });
 
     test('member has basic permissions', function () {
@@ -52,6 +57,9 @@ describe('Permission system', function () {
         expect($this->member->hasPermissionTo('project.create'))->toBeTrue();
         expect($this->member->hasPermissionTo('task.create'))->toBeTrue();
         expect($this->member->hasPermissionTo('workspace.create'))->toBeFalse();
+        expect($this->member->hasPermissionTo('tag.create'))->toBeTrue();
+        expect($this->member->hasPermissionTo('tag.delete'))->toBeFalse();
+        expect($this->member->hasPermissionTo('comment.create'))->toBeTrue();
     });
 
     test('viewer has read-only permissions', function () {
@@ -59,6 +67,10 @@ describe('Permission system', function () {
         expect($this->viewer->hasPermissionTo('project.view'))->toBeTrue();
         expect($this->viewer->hasPermissionTo('task.view'))->toBeTrue();
         expect($this->viewer->hasPermissionTo('task.create'))->toBeFalse();
+        expect($this->viewer->hasPermissionTo('tag.view'))->toBeTrue();
+        expect($this->viewer->hasPermissionTo('tag.create'))->toBeFalse();
+        expect($this->viewer->hasPermissionTo('comment.view'))->toBeTrue();
+        expect($this->viewer->hasPermissionTo('comment.create'))->toBeFalse();
     });
 
     test('roles are correctly assigned', function () {
