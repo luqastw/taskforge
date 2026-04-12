@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectColumnController;
 use App\Http\Controllers\ProjectMemberController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskAssigneeController;
+use App\Http\Controllers\TaskAttachmentController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskTagController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceMemberController;
@@ -103,4 +108,39 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
         ->name('tasks.assignees.bulk');
     Route::delete('/tasks/{task}/assignees/{user}', [TaskAssigneeController::class, 'destroy'])
         ->name('tasks.assignees.destroy');
+
+    // Task tags routes
+    Route::get('/tasks/{task}/tags', [TaskTagController::class, 'index'])
+        ->name('tasks.tags.index');
+    Route::post('/tasks/{task}/tags', [TaskTagController::class, 'store'])
+        ->name('tasks.tags.store');
+    Route::delete('/tasks/{task}/tags/{tag}', [TaskTagController::class, 'destroy'])
+        ->name('tasks.tags.destroy');
+
+    // Task comments routes
+    Route::get('/tasks/{task}/comments', [CommentController::class, 'index'])
+        ->name('tasks.comments.index');
+    Route::post('/tasks/{task}/comments', [CommentController::class, 'store'])
+        ->name('tasks.comments.store');
+    Route::put('/tasks/{task}/comments/{comment}', [CommentController::class, 'update'])
+        ->name('tasks.comments.update');
+    Route::delete('/tasks/{task}/comments/{comment}', [CommentController::class, 'destroy'])
+        ->name('tasks.comments.destroy');
+
+    // Task attachments routes
+    Route::get('/tasks/{task}/attachments', [TaskAttachmentController::class, 'index'])
+        ->name('tasks.attachments.index');
+    Route::post('/tasks/{task}/attachments', [TaskAttachmentController::class, 'store'])
+        ->name('tasks.attachments.store');
+    Route::delete('/tasks/{task}/attachments/{media}', [TaskAttachmentController::class, 'destroy'])
+        ->name('tasks.attachments.destroy');
+
+    // Tag routes
+    Route::apiResource('tags', TagController::class);
+
+    // Activity log routes
+    Route::get('/tasks/{task}/activity', [ActivityLogController::class, 'taskHistory'])
+        ->name('tasks.activity');
+    Route::get('/projects/{project}/activity', [ActivityLogController::class, 'projectHistory'])
+        ->name('projects.activity');
 });

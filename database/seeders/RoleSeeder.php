@@ -52,6 +52,18 @@ class RoleSeeder extends Seeder
             'member.update',
             'member.remove',
 
+            // Tag permissions
+            'tag.create',
+            'tag.view',
+            'tag.update',
+            'tag.delete',
+
+            // Comment permissions
+            'comment.create',
+            'comment.view',
+            'comment.update',
+            'comment.delete',
+
             // Tenant permissions
             'tenant.update',
             'tenant.delete',
@@ -71,6 +83,8 @@ class RoleSeeder extends Seeder
             'workspace.create', 'workspace.view', 'workspace.update', 'workspace.delete',
             'project.create', 'project.view', 'project.update', 'project.delete',
             'task.create', 'task.view', 'task.update', 'task.delete', 'task.assign',
+            'tag.create', 'tag.view', 'tag.update', 'tag.delete',
+            'comment.create', 'comment.view', 'comment.update', 'comment.delete',
             'member.invite', 'member.view', 'member.update', 'member.remove',
         ]);
 
@@ -79,6 +93,8 @@ class RoleSeeder extends Seeder
             'workspace.view',
             'project.view', 'project.create',
             'task.create', 'task.view', 'task.update', 'task.delete', 'task.assign',
+            'tag.create', 'tag.view',
+            'comment.create', 'comment.view', 'comment.update', 'comment.delete',
             'member.view',
         ]);
 
@@ -87,6 +103,8 @@ class RoleSeeder extends Seeder
             'workspace.view',
             'project.view',
             'task.view',
+            'tag.view',
+            'comment.view',
             'member.view',
         ]);
     }
