@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\MemberResource;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskAssignedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -67,6 +68,8 @@ class TaskAssigneeController extends Controller
             ])
             ->log("User {$user->name} was assigned to task {$task->title}");
 
+        $user->notify(new TaskAssignedNotification($task, $request->user()));
+
         return $this->successResponse(
             new MemberResource($user->load('roles')),
             'User assigned to task successfully',
@@ -116,6 +119,7 @@ class TaskAssigneeController extends Controller
             $task->assignees()->attach($user->id, [
                 'assigned_at' => now(),
             ]);
+            $user->notify(new TaskAssignedNotification($task, $request->user()));
             $assignedCount++;
         }
 

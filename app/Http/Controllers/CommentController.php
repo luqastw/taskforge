@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\MentionedInCommentNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -44,6 +46,8 @@ class CommentController extends Controller
 
         $comment->load('user.roles');
 
+        $this->notifyMentionedUsers($comment, $task);
+
         return $this->createdResponse(new CommentResource($comment));
     }
 
@@ -75,5 +79,23 @@ class CommentController extends Controller
         $comment->delete();
 
         return response()->noContent();
+    }
+
+    protected function notifyMentionedUsers(Comment $comment, Task $task): void
+    {
+        $usernames = $comment->getMentionedUsernames();
+
+        if (empty($usernames)) {
+            return;
+        }
+
+        $users = User::where('tenant_id', $comment->tenant_id)
+            ->whereIn('name', $usernames)
+            ->where('id', '!=', $comment->user_id)
+            ->get();
+
+        foreach ($users as $user) {
+            $user->notify(new MentionedInCommentNotification($comment, $task));
+        }
     }
 }

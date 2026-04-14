@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\NotificationPreferenceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectColumnController;
 use App\Http\Controllers\ProjectMemberController;
@@ -143,4 +145,22 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
         ->name('tasks.activity');
     Route::get('/projects/{project}/activity', [ActivityLogController::class, 'projectHistory'])
         ->name('projects.activity');
+
+    // Notification routes
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
+        ->name('notifications.unread-count');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.read-all');
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])
+        ->name('notifications.destroy');
+
+    // Notification preferences routes
+    Route::get('/notification-preferences', [NotificationPreferenceController::class, 'show'])
+        ->name('notification-preferences.show');
+    Route::put('/notification-preferences', [NotificationPreferenceController::class, 'update'])
+        ->name('notification-preferences.update');
 });

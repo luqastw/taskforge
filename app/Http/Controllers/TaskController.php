@@ -7,7 +7,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
+use App\Models\ProjectColumn;
 use App\Models\Task;
+use App\Notifications\TaskStatusChangedNotification;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -53,7 +55,13 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Task $task): TaskResource
     {
+        $oldColumnId = $task->project_column_id;
+
         $task = $this->taskService->updateTask($task, $request->validated());
+
+        if ($request->has('project_column_id') && $oldColumnId !== $task->project_column_id) {
+            $this->notifyStatusChange($task, $oldColumnId, $request->user());
+        }
 
         return new TaskResource($task);
     }
@@ -80,5 +88,26 @@ class TaskController extends Controller
             ->paginate(request('per_page', 15));
 
         return TaskResource::collection($subtasks);
+    }
+
+    protected function notifyStatusChange(Task $task, int $oldColumnId, $changedBy): void
+    {
+        $oldColumn = ProjectColumn::find($oldColumnId);
+        $newColumn = ProjectColumn::find($task->project_column_id);
+
+        if (! $oldColumn || ! $newColumn) {
+            return;
+        }
+
+        $assignees = $task->assignees()->where('users.id', '!=', $changedBy->id)->get();
+
+        foreach ($assignees as $assignee) {
+            $assignee->notify(new TaskStatusChangedNotification(
+                $task,
+                $changedBy,
+                $oldColumn->name,
+                $newColumn->name,
+            ));
+        }
     }
 }
