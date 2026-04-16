@@ -153,6 +153,36 @@ test('can accept an invitation and create account', function () {
     expect($invitation->accepted_at)->not->toBeNull();
 });
 
+test('cannot accept invitation if email was registered after invite', function () {
+    $invitation = Invitation::create([
+        'tenant_id' => $this->tenant->id,
+        'email' => 'race@example.com',
+        'token' => 'race-token',
+        'invited_by' => $this->owner->id,
+        'role' => 'member',
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    $otherTenant = Tenant::factory()->create();
+    User::factory()->create([
+        'tenant_id' => $otherTenant->id,
+        'email' => 'race@example.com',
+    ]);
+
+    $response = $this->postJson('/api/invitations/accept', [
+        'token' => 'race-token',
+        'name' => 'Race User',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'A user with this email already exists in the system.',
+        ]);
+});
+
 test('cannot accept expired invitation', function () {
     $invitation = Invitation::create([
         'tenant_id' => $this->tenant->id,

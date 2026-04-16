@@ -73,6 +73,11 @@ class InvitationService
                 throw new \InvalidArgumentException('This invitation has expired or has already been used.');
             }
 
+            $existingUser = $this->userRepository->findByEmail($invitation->email);
+            if ($existingUser) {
+                throw new \InvalidArgumentException('A user with this email already exists in the system.');
+            }
+
             $user = $this->userRepository->create([
                 'tenant_id' => $invitation->tenant_id,
                 'name' => $name,
