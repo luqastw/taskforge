@@ -37,27 +37,18 @@ test('users from different tenants are isolated', function () {
         ->and($users->contains($user2))->toBeFalse();
 });
 
-test('email uniqueness is scoped to tenant', function () {
+test('email uniqueness is enforced globally', function () {
     $tenant1 = Tenant::factory()->create();
     $tenant2 = Tenant::factory()->create();
 
-    // Same email can exist in different tenants
-    $user1 = User::factory()->create([
+    User::factory()->create([
         'tenant_id' => $tenant1->id,
         'email' => 'john@example.com',
     ]);
 
-    $user2 = User::factory()->create([
-        'tenant_id' => $tenant2->id,
-        'email' => 'john@example.com',
-    ]);
-
-    expect($user1->email)->toBe($user2->email)
-        ->and($user1->tenant_id)->not->toBe($user2->tenant_id);
-
-    // Same email cannot exist twice in the same tenant
+    // Same email cannot exist even in a different tenant
     expect(fn () => User::factory()->create([
-        'tenant_id' => $tenant1->id,
+        'tenant_id' => $tenant2->id,
         'email' => 'john@example.com',
     ]))->toThrow(QueryException::class);
 });

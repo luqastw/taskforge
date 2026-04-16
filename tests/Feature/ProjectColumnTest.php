@@ -44,6 +44,8 @@ beforeEach(function (): void {
         'tenant_id' => $this->tenant->id,
         'workspace_id' => $this->workspace->id,
     ]);
+
+    app()->make(\App\Services\ProjectColumnService::class)->createDefaultColumns($this->project);
 });
 
 // ===== INDEX TESTS =====

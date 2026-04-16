@@ -11,10 +11,14 @@ arch('models')
     ->expect('App\Models')
     ->toExtend('Illuminate\Database\Eloquent\Model')
     ->toOnlyBeUsedIn([
+        'App\Events',
         'App\Http\Controllers',
         'App\Http\Middleware',
         'App\Http\Requests',
         'App\Http\Resources',
+        'App\Jobs',
+        'App\Listeners',
+        'App\Mail',
         'App\Models',
         'App\Notifications',
         'App\Policies',

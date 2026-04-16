@@ -45,6 +45,12 @@ beforeEach(function (): void {
         'workspace_id' => $this->workspace->id,
         'name' => 'Test Project',
     ]);
+
+    $this->workspace->members()->attach([
+        $this->owner->id => ['joined_at' => now()],
+        $this->admin->id => ['joined_at' => now()],
+        $this->member->id => ['joined_at' => now()],
+    ]);
 });
 
 test('owner can list project members', function (): void {
@@ -276,12 +282,14 @@ test('owner can add multiple members at once', function (): void {
         'is_active' => true,
     ]);
     $member2->assignRole('member');
+    $this->workspace->members()->attach($member2->id, ['joined_at' => now()]);
 
     $member3 = User::factory()->create([
         'tenant_id' => $this->tenant->id,
         'is_active' => true,
     ]);
     $member3->assignRole('member');
+    $this->workspace->members()->attach($member3->id, ['joined_at' => now()]);
 
     Sanctum::actingAs($this->owner);
 
@@ -304,6 +312,7 @@ test('bulk add skips users already members', function (): void {
         'is_active' => true,
     ]);
     $member2->assignRole('member');
+    $this->workspace->members()->attach($member2->id, ['joined_at' => now()]);
 
     Sanctum::actingAs($this->owner);
 

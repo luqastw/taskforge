@@ -50,6 +50,8 @@ beforeEach(function (): void {
         'name' => 'Test Project',
         'status' => 'active',
     ]);
+
+    app()->make(\App\Services\ProjectColumnService::class)->createDefaultColumns($this->project);
 });
 
 // ===== INDEX TESTS =====

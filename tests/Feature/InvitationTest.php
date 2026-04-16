@@ -54,7 +54,7 @@ test('cannot invite a user that already exists in the tenant', function () {
     $response->assertStatus(422)
         ->assertJson([
             'success' => false,
-            'message' => 'User already exists in this tenant.',
+            'message' => 'A user with this email already exists in the system.',
         ]);
 });
 

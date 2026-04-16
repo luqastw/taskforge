@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use App\Services\ProjectService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -31,11 +32,11 @@ class ProjectController extends Controller
         return ProjectResource::collection($projects);
     }
 
-    public function store(StoreProjectRequest $request): ProjectResource
+    public function store(StoreProjectRequest $request): JsonResponse
     {
         $project = $this->projectService->createProject($request->validated());
 
-        return new ProjectResource($project);
+        return (new ProjectResource($project))->response()->setStatusCode(201);
     }
 
     public function show(Project $project): ProjectResource
